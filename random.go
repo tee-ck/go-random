@@ -1,7 +1,9 @@
 package random
 
 import (
+	"math"
 	"math/rand"
+	"reflect"
 	"time"
 	"unicode/utf8"
 )
@@ -9,7 +11,8 @@ import (
 type Characters = string
 
 var (
-	randomizer = New() // default randomizer
+	randomizer = New()               // default randomizer
+	crypto     = randomizer.Crypto() // default crypto randomizer
 )
 
 const (
@@ -27,12 +30,14 @@ const (
 	CharsHexDigits                       = CharsArabicNumerals + "abcdef"
 	CharsSafeURL                         = CharsArabicNumerals + CharsRomanLettersLower + CharsRomanLettersUpper + "-._~"
 	CharsAll                             = CharsChineseNumerals + CharsGreekLetters + CharsRomanAll + CharsDefault
+
+	Float32ofMaxInt32 = float32(math.MaxInt32)
+	Float64ofMaxInt64 = float64(math.MaxInt64)
 )
 
 type Config struct {
-	Chars  Characters
-	Seed   int64
-	Crypto bool
+	Chars Characters
+	Seed  int64
 }
 
 type Random struct {
@@ -138,8 +143,29 @@ func (r *Random) Float32() float32 {
 	return r.core.Float32()
 }
 
+func (r *Random) FastFloat32() float32 {
+	return float32(r.core.Int63()%math.MaxInt32) / Float32ofMaxInt32
+}
+
 func (r *Random) Float64() float64 {
 	return r.core.Float64()
+}
+
+func (r *Random) FastFloat64() float64 {
+	return float64(r.core.Int63()) / Float64ofMaxInt64
+}
+
+func (r *Random) Choice(items interface{}) interface{} {
+	kind := reflect.TypeOf(items).Kind()
+	if kind == reflect.Slice || kind == reflect.Array {
+		v := reflect.ValueOf(items)
+		return v.Index(r.Int() % v.Len()).Interface()
+	}
+	return nil
+}
+
+func (r *Random) ChoiceStrings(items []string) string {
+	return items[Int()%len(items)]
 }
 
 func New(conf ...Config) *Random {
@@ -177,7 +203,7 @@ func WithSeed(seed int64) *Random {
 }
 
 func Crypto() *CryptoRandom {
-	return randomizer.Crypto()
+	return crypto
 }
 
 func Bytes(size int) []byte {
@@ -190,6 +216,14 @@ func Rune() rune {
 
 func Runes(size int) []rune {
 	return randomizer.Runes(size)
+}
+
+func RandInt(min, max int) int {
+	return randomizer.RandInt(min, max)
+}
+
+func RandString(size int) string {
+	return randomizer.RandString(size)
 }
 
 func Int() int {
@@ -216,14 +250,22 @@ func Float32() float32 {
 	return randomizer.Float32()
 }
 
+func FastFloat32() float32 {
+	return randomizer.FastFloat32()
+}
+
 func Float64() float64 {
 	return randomizer.Float64()
 }
 
-func RandInt(min, max int) int {
-	return randomizer.RandInt(min, max)
+func FastFloat64() float64 {
+	return randomizer.FastFloat64()
 }
 
-func RandString(size int) string {
-	return randomizer.RandString(size)
+func Choice(items interface{}) interface{} {
+	return randomizer.Choice(items)
+}
+
+func ChoiceStrings(items []string) string {
+	return randomizer.ChoiceStrings(items)
 }
