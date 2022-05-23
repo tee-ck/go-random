@@ -59,12 +59,6 @@ func BenchmarkRandom_Float64(b *testing.B) {
 	}
 }
 
-func BenchmarkRandom_FastFloat64(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		FastFloat64()
-	}
-}
-
 func BenchmarkRandom_Runes32(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		Runes(32)
@@ -99,7 +93,7 @@ func BenchmarkRandom_Choice(b *testing.B) {
 	}
 }
 
-func BenchmarkRandom_ChoiceStrings(b *testing.B) {
+func BenchmarkRandom_CryptoChoice(b *testing.B) {
 	items := []string{
 		"apple",
 		"banana",
@@ -111,7 +105,7 @@ func BenchmarkRandom_ChoiceStrings(b *testing.B) {
 	}
 
 	for i := 0; i < b.N; i++ {
-		ChoiceStrings(items)
+		CryptoChoice(items)
 	}
 }
 

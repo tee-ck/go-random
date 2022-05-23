@@ -1,6 +1,8 @@
 # go-random
+A simple random data generator based on Golang standard libraries "math/rand" and "crypto/rand"
 
-## A simple random data generator based on Golang standard libraries "math/rand" and "crypto/rand"
+# requirements
+go version > 1.18
 
 # Installation
 

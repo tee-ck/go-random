@@ -3,7 +3,6 @@ package random
 import (
 	"math"
 	"math/rand"
-	"reflect"
 	"time"
 	"unicode/utf8"
 )
@@ -155,19 +154,6 @@ func (r *Random) FastFloat64() float64 {
 	return float64(r.core.Int63()) / Float64ofMaxInt64
 }
 
-func (r *Random) Choice(items interface{}) interface{} {
-	kind := reflect.TypeOf(items).Kind()
-	if kind == reflect.Slice || kind == reflect.Array {
-		v := reflect.ValueOf(items)
-		return v.Index(r.Int() % v.Len()).Interface()
-	}
-	return nil
-}
-
-func (r *Random) ChoiceStrings(items []string) string {
-	return items[Int()%len(items)]
-}
-
 func New(conf ...Config) *Random {
 	var (
 		chars = CharsDefault
@@ -258,14 +244,16 @@ func Float64() float64 {
 	return randomizer.Float64()
 }
 
-func FastFloat64() float64 {
-	return randomizer.FastFloat64()
+func Choice[T any](items []T) T {
+	return items[Int()%len(items)]
 }
 
-func Choice(items interface{}) interface{} {
-	return randomizer.Choice(items)
-}
+func CryptoChoice[T any](items []T) (T, error) {
+	v, err := crypto.FastInt63()
+	if err != nil {
+		var v T
+		return v, err
+	}
 
-func ChoiceStrings(items []string) string {
-	return randomizer.ChoiceStrings(items)
+	return items[v%int64(len(items))], nil
 }
