@@ -7,7 +7,6 @@ import (
 func BenchmarkRandom_Bytes32(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		Bytes(32)
-
 	}
 }
 

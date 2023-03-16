@@ -196,20 +196,50 @@ func Bytes(size int) []byte {
 	return randomizer.Bytes(size)
 }
 
+func BytesF(size int) func() []byte {
+	return func() []byte {
+		return randomizer.Bytes(size)
+	}
+}
+
 func Rune() rune {
 	return randomizer.Rune()
+}
+
+func RuneF() func() rune {
+	return func() rune {
+		return randomizer.Rune()
+	}
 }
 
 func Runes(size int) []rune {
 	return randomizer.Runes(size)
 }
 
+func RunesF(size int) func() []rune {
+	return func() []rune {
+		return randomizer.Runes(size)
+	}
+}
+
 func RandInt(min, max int) int {
 	return randomizer.RandInt(min, max)
 }
 
+func RandIntF(min, max int) func() int {
+	return func() int {
+		return randomizer.RandInt(min, max)
+	}
+}
+
 func RandString(size int) string {
 	return randomizer.RandString(size)
+}
+
+func RandStringF(size int) func() string {
+	return func() string {
+		return randomizer.RandString(size)
+	}
 }
 
 func Int() int {
